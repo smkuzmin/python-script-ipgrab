@@ -1,3 +1,4 @@
+```
 IPGrab v1.7 - IPv4 Grabber
 
 Reads any file (text or binary) from STDIN, grabs valid IPv4 addresses
@@ -22,3 +23,4 @@ USAGE:
   cat file | ipgrab -i
   cat file | ipgrab -n
   ipgrab < file > file.lst
+```
