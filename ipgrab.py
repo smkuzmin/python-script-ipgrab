@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python3
 
 r"""
-IPGrab v1.7 - IPv4 Grabber
+IPGrab v1.9 - IPv4 Grabber
 
 Reads any file (text or binary) from STDIN, grabs valid IPv4 addresses
 and networks, and outputs the list to STDOUT in order of appearance.
@@ -80,11 +80,12 @@ def main():
         print(item)
 
 if __name__ == '__main__':
-    # Показываем справку, если запущен без перенаправления ввода
-    if sys.stdin.isatty() and '-h' not in sys.argv and '--help' not in sys.argv:
-        print(__doc__)
+    # Показываем справку при вызове с -h или --help, или если запущен без перенаправления ввода
+    if sys.stdin.isatty() or '-h' in sys.argv or '--help' in sys.argv:
+        print(__doc__, file=sys.stderr)
         sys.exit(0)
 
+    # Обрабатываем прерывание без вывода ошибки
     try:
         main()
     except KeyboardInterrupt:
