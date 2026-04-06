@@ -17,7 +17,7 @@ OUTPUT FORMAT:
   192.168.1.0/24
 
 USAGE:
-  cat file | ipgrab [keys]
+  cat file | ipgrab [options]
   ipgrab [options] < file > file.lst
 
 OPTIONS:
