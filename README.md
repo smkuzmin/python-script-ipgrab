@@ -1,5 +1,5 @@
 ```
-IPGrab v1.12 - IPv4 Grabber
+IPGrab v1.13 - IPv4 Grabber
 
 Reads text or binary data from standard input, extracts valid IPv4 addresses
 and networks, and outputs them in order of appearance.
