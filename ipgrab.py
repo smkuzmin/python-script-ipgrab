@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python3
 
 r"""
-IPGrab v1.12 - IPv4 Grabber
+IPGrab v1.13 - IPv4 Grabber
 
 Reads text or binary data from standard input, extracts valid IPv4 addresses
 and networks, and outputs them in order of appearance.
@@ -79,7 +79,8 @@ def main():
             decoded = match.decode('ascii')
             if '/' in decoded:
                 # Это сеть с маской или префиксом
-                net_obj = ipaddress.ip_network(decoded, strict=False)
+                # strict=True отклоняет сети с ненулевыми битами хоста (например, 8.8.8.5/24)
+                net_obj = ipaddress.ip_network(decoded, strict=True)
                 if isinstance(net_obj, ipaddress.IPv4Network):
                     if ip_only:
                         continue
