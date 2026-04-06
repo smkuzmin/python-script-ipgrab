@@ -1,12 +1,12 @@
 ﻿#!/usr/bin/env python3
 
 r"""
-IPGrab v1.9 - IPv4 Grabber
+IPGrab v1.10 - IPv4 Grabber
 
-Reads any file (text or binary) from STDIN, grabs valid IPv4 addresses
-and networks, and outputs the list to STDOUT in order of appearance.
+Reads text or binary data from standard input, extracts valid IPv4 addresses
+and networks, and outputs them in order of appearance.
 
-By default, grabs both IP addresses and networks.
+By default, outputs both individual IPs and networks.
 
 INPUT FORMAT:
   192.168.1.1                # Single IP address
@@ -19,12 +19,13 @@ OUTPUT FORMAT:
   192.168.1.0/24
 
 USAGE:
-  cat file | ipgrab
-  cat file | ipgrab --ip-only
-  cat file | ipgrab --net-only
-  cat file | ipgrab -i
-  cat file | ipgrab -n
-  ipgrab < file > file.lst
+  cat file | ipgrab [keys]
+  ipgrab [keys] < file > file.lst
+
+KEYS:
+  -i|--ip-only     Output only individual IP addresses
+  -n|--net-only    Output only networks
+  -w|--wan-only    Output only public (WAN) addresses and networks
 """
 
 import sys
@@ -33,15 +34,19 @@ import ipaddress
 
 def main():
     # Парсим аргументы командной строки
-    mode = 'both'  # режим по умолчанию - и IP и сети
+    ip_only = False
+    net_only = False
+    wan_only = False
     args = sys.argv[1:]
 
     for arg in args:
         if arg in ('-i', '--ip-only'):
-            mode = 'ip'
+            ip_only = True
         elif arg in ('-n', '--net-only'):
-            mode = 'net'
-        elif arg in ('-h', '--help'):
+            net_only = True
+        elif arg in ('-w', '--wan-only'):
+            wan_only = True
+        else:
             print(__doc__)
             sys.exit(0)
 
@@ -61,13 +66,17 @@ def main():
                 # Это сеть с маской или префиксом
                 net_obj = ipaddress.ip_network(decoded, strict=False)
                 if isinstance(net_obj, ipaddress.IPv4Network):
-                    if mode in ('both', 'net'):
+                    if net_only or (not ip_only and not net_only):
+                        if wan_only and not net_obj.is_global:
+                            continue
                         result.append(str(net_obj))
             else:
                 # Это одиночный IP
                 ip_obj = ipaddress.ip_address(decoded)
                 if isinstance(ip_obj, ipaddress.IPv4Address):
-                    if mode in ('both', 'ip'):
+                    if ip_only or (not ip_only and not net_only):
+                        if wan_only and not ip_obj.is_global:
+                            continue
                         result.append(str(ip_obj))
         except (ValueError, UnicodeDecodeError):
             continue
