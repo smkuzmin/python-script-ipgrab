@@ -9,9 +9,9 @@ and networks, and outputs them in order of appearance.
 By default, outputs both individual IPs and networks.
 
 INPUT FORMAT:
-  192.168.1.1                # Single IP address
-  192.168.1.0/24             # Network with CIDR prefix
-  192.168.1.0/255.255.255.0  # Network with subnet mask
+  192.168.1.1                  Single IP address
+  192.168.1.0/24               Network with CIDR prefix
+  192.168.1.0/255.255.255.0    Network with subnet mask
 
 OUTPUT FORMAT:
   192.168.1.1
@@ -19,14 +19,14 @@ OUTPUT FORMAT:
   192.168.1.0/24
 
 USAGE:
-  cat file | ipgrab [options]
-  ipgrab [options] < file > file.lst
+  cat infile | ipgrab [OPTIONS]
+  ipgrab [OPTIONS] < infile > outfile.lst
 
 OPTIONS:
-  -i|--ip-only     Output only individual IP addresses
-  -n|--net-only    Output only networks
-  -l|--lan-only    Output only private (LAN) addresses and networks
-  -w|--wan-only    Output only public (WAN) addresses and networks
+  -i, --ip-only     Output only individual IP addresses
+  -n, --net-only    Output only networks
+  -l, --lan-only    Output only private (LAN) addresses and networks
+  -w, --wan-only    Output only public (WAN) addresses and networks
 """
 
 import sys
@@ -114,6 +114,7 @@ def main():
     for item in result:
         print(item)
 
+# Точка входа
 if __name__ == '__main__':
     # Показываем справку при вызове с -h или --help, или если запущен без перенаправления ввода
     if sys.stdin.isatty() or '-h' in sys.argv or '--help' in sys.argv:
