@@ -1,5 +1,5 @@
 ```
-IPGrab v1.10 - IPv4 Grabber
+IPGrab v1.11 - IPv4 Grabber
 
 Reads text or binary data from standard input, extracts valid IPv4 addresses
 and networks, and outputs them in order of appearance.
@@ -18,10 +18,11 @@ OUTPUT FORMAT:
 
 USAGE:
   cat file | ipgrab [keys]
-  ipgrab [keys] < file > file.lst
+  ipgrab [options] < file > file.lst
 
-KEYS:
+OPTIONS:
   -i|--ip-only     Output only individual IP addresses
   -n|--net-only    Output only networks
+  -l|--lan-only    Output only private (LAN) addresses and networks
   -w|--wan-only    Output only public (WAN) addresses and networks
 ```
