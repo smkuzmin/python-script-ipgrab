@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python3
 
 r"""
-IPGrab v1.11 - IPv4 Grabber
+IPGrab v1.12 - IPv4 Grabber
 
 Reads text or binary data from standard input, extracts valid IPv4 addresses
 and networks, and outputs them in order of appearance.
@@ -71,7 +71,7 @@ def main():
         return
 
     result = []
-    pattern = rb'\b(?:\d{1,3}\.){3}\d{1,3}(?:/\d{1,2}|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})?\b'
+    pattern = rb'\b(?:\d{1,3}\.){3}\d{1,3}(?:/\d{1,2}|/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})?\b'
     matches = re.findall(pattern, input_data)
 
     for match in matches:
