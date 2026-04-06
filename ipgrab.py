@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python3
 
 r"""
-IPGrab v1.10 - IPv4 Grabber
+IPGrab v1.11 - IPv4 Grabber
 
 Reads text or binary data from standard input, extracts valid IPv4 addresses
 and networks, and outputs them in order of appearance.
@@ -20,11 +20,12 @@ OUTPUT FORMAT:
 
 USAGE:
   cat file | ipgrab [keys]
-  ipgrab [keys] < file > file.lst
+  ipgrab [options] < file > file.lst
 
-KEYS:
+OPTIONS:
   -i|--ip-only     Output only individual IP addresses
   -n|--net-only    Output only networks
+  -l|--lan-only    Output only private (LAN) addresses and networks
   -w|--wan-only    Output only public (WAN) addresses and networks
 """
 
@@ -36,6 +37,7 @@ def main():
     # Парсим аргументы командной строки
     ip_only = False
     net_only = False
+    lan_only = False
     wan_only = False
     args = sys.argv[1:]
 
@@ -44,11 +46,24 @@ def main():
             ip_only = True
         elif arg in ('-n', '--net-only'):
             net_only = True
+        elif arg in ('-l', '--lan-only'):
+            lan_only = True
         elif arg in ('-w', '--wan-only'):
             wan_only = True
-        else:
-            print(__doc__)
+        elif arg in ('-h', '--help'):
+            print(__doc__, file=sys.stderr)
             sys.exit(0)
+        else:
+            print(f"Error: Invalid option: {arg}", file=sys.stderr)
+            sys.exit(1)
+
+    # Проверка на взаимоисключающие флаги
+    if ip_only and net_only:
+        print("Error: Options -i and -n are mutually exclusive", file=sys.stderr)
+        sys.exit(1)
+    if lan_only and wan_only:
+        print("Error: Options -l and -w are mutually exclusive", file=sys.stderr)
+        sys.exit(1)
 
     try:
         input_data = sys.stdin.buffer.read()
@@ -66,18 +81,28 @@ def main():
                 # Это сеть с маской или префиксом
                 net_obj = ipaddress.ip_network(decoded, strict=False)
                 if isinstance(net_obj, ipaddress.IPv4Network):
-                    if net_only or (not ip_only and not net_only):
-                        if wan_only and not net_obj.is_global:
+                    if ip_only:
+                        continue
+                    if wan_only:
+                        if not net_obj.is_global:
                             continue
-                        result.append(str(net_obj))
+                    if lan_only:
+                        if net_obj.is_global:
+                            continue
+                    result.append(str(net_obj))
             else:
                 # Это одиночный IP
                 ip_obj = ipaddress.ip_address(decoded)
                 if isinstance(ip_obj, ipaddress.IPv4Address):
-                    if ip_only or (not ip_only and not net_only):
-                        if wan_only and not ip_obj.is_global:
+                    if net_only:
+                        continue
+                    if wan_only:
+                        if not ip_obj.is_global:
                             continue
-                        result.append(str(ip_obj))
+                    if lan_only:
+                        if ip_obj.is_global:
+                            continue
+                    result.append(str(ip_obj))
         except (ValueError, UnicodeDecodeError):
             continue
 
