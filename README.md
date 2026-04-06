@@ -1,10 +1,10 @@
 ```
-IPGrab v1.7 - IPv4 Grabber
+IPGrab v1.10 - IPv4 Grabber
 
-Reads any file (text or binary) from STDIN, grabs valid IPv4 addresses
-and networks, and outputs the list to STDOUT in order of appearance.
+Reads text or binary data from standard input, extracts valid IPv4 addresses
+and networks, and outputs them in order of appearance.
 
-By default, grabs both IP addresses and networks.
+By default, outputs both individual IPs and networks.
 
 INPUT FORMAT:
   192.168.1.1                # Single IP address
@@ -17,10 +17,11 @@ OUTPUT FORMAT:
   192.168.1.0/24
 
 USAGE:
-  cat file | ipgrab
-  cat file | ipgrab --ip-only
-  cat file | ipgrab --net-only
-  cat file | ipgrab -i
-  cat file | ipgrab -n
-  ipgrab < file > file.lst
+  cat file | ipgrab [keys]
+  ipgrab [keys] < file > file.lst
+
+KEYS:
+  -i|--ip-only     Output only individual IP addresses
+  -n|--net-only    Output only networks
+  -w|--wan-only    Output only public (WAN) addresses and networks
 ```
